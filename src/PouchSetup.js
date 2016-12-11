@@ -1,4 +1,7 @@
-import PouchDB from 'pouchdb';
+// import PouchDB from 'pouchdb';
+const PouchDB = window.PouchDB;
+const pouchDBName = 'log';
+const serviceWorker = window.serviceWorkerRego;
 
 const timeOrderVersion = 1;
 const timeOrder = {
@@ -26,16 +29,17 @@ class DBLayer {
       this.getLatest = this.getLatest.bind(this);
       this.getSyncUrl = this.getSyncUrl.bind(this);
       this.setSyncUrl = this.setSyncUrl.bind(this);
+      this._scheduleRemoteSync = this._scheduleRemoteSync.bind(this);
       this.registerUpdateListener = this.registerUpdateListener.bind(this);
       this.unregisterUpdateListener = this.unregisterUpdateListener.bind(this);
    }
 
    create(doc) {
-      return this.db.post(doc);
+      return this.db.post(doc).then(this._scheduleRemoteSync);
    }
 
    update(doc) {
-      return this.db.put(doc);
+      return this.db.put(doc).then(this._scheduleRemoteSync);
    }
 
    get(id) {
@@ -64,9 +68,19 @@ class DBLayer {
       }
 
       if (url !== null) {
-         this.oldSync = this.db.sync(url, {
+         this.oldSync = this.db.replicate.from(url, {
             'live': true,
             'retry': true
+         });
+      }
+   }
+
+   _scheduleRemoteSync() {
+      let syncURL = this.getSyncUrl();
+      if (syncURL) {
+         window.serviceWorkerRego.then(function(swRegistration) {
+            let eventName = "syncPouch\t" + pouchDBName + "\t" + syncURL;
+            return swRegistration.sync.register(eventName);
          });
       }
    }
@@ -88,8 +102,7 @@ class DBLayer {
 }
 
 async function buildDBLayer() {
-   let db = new PouchDB('log');
-   console.log("loading");
+   let db = new PouchDB(pouchDBName);
    let currVersion = 0;
    try {
       let currTimeDoc = await db.get('_design/time_order');
