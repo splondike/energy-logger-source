@@ -1,0 +1,9 @@
+{
+  "name": "Energy Logger",
+  "short_name": "Energy Logger",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "Allows you to log information related to your energy levels throughout the day",
+  "scope": "/"
+}

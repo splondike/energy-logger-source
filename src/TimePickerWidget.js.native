@@ -1,0 +1,71 @@
+import React, { Component } from 'react';
+import './TimePickerWidget.css';
+
+function formatDateComponent(date) {
+   return date.getFullYear() + "-" + leftPad(date.getMonth()+1) + "-" + leftPad(date.getDate());
+}
+
+function formatTimeComponent(date) {
+   return leftPad(date.getHours()) + ":" + leftPad(date.getMinutes());
+}
+
+function leftPad(num) {
+   return num < 10 ? "0" + num : "" + num;
+}
+
+function parseDate(str) {
+   let rtn = str.match("(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):\\d{2}([+-]\\d{1,2})");
+   if (rtn === null) {
+      throw Error("Couldn't parse date");
+   }
+   let p = rtn.slice(1).map(i => parseInt(i, 10))
+   let d = new Date(p[0], p[1], p[2], p[3], p[4]);
+}
+
+class TimePicker extends Component {
+   constructor(props) {
+      super(props);
+
+      this.handleChange = this.handleChange.bind(this);
+      this.componentDidMount = this.componentDidMount.bind(this);
+   }
+
+   handleChange() {
+      if (this.props.onChange) {
+         let date = new Date();
+         let tzHours = (date.getTimezoneOffset() / -60);
+         let timestampStr = 
+            this.dateInput.value + "T" + this.timeInput.value + ":00" +
+               (tzHours > 0 ? "+" + tzHours : tzHours);
+         this.props.onChange(timestampStr);
+      }
+   }
+
+   componentDidMount() {
+      this.handleChange();
+   }
+
+   render() {
+      let time = typeof this.props.value === "undefined" ?
+         new Date() : parseDate(this.props.value);
+      let dateValue = formatDateComponent(time);
+      let timeValue = formatTimeComponent(time);
+
+      return (
+         <div className="time-picker">
+            <input
+               type="date"
+               value={dateValue}
+               onChange={this.handleChange}
+               ref={(input) => this.dateInput = input} />
+            <input
+               type="time"
+               value={timeValue}
+               onChange={this.handleChange}
+               ref={(input) => this.timeInput = input} />
+         </div>
+      );
+   }
+};
+
+export default TimePicker;

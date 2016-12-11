@@ -1,0 +1,19 @@
+.form-group {
+   margin-bottom: 1rem;
+}
+.form-group > label {
+   display: block;
+}
+
+.action-bar {
+   margin-top: 1rem;
+}
+.action-bar > * {
+   margin-right: 0.5rem;
+}
+
+input[type=text], input[type=date], input[type=time], input[type=number] {
+   background: #fff;
+   padding: 10px;
+   border: 1px solid #aaaabb;
+}
