@@ -5,5 +5,5 @@
   "display": "standalone",
   "background_color": "#fff",
   "description": "Allows you to log information related to your energy levels throughout the day",
-  "scope": "/"
+  "scope": "/index.html"
 }
