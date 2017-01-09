@@ -3,6 +3,7 @@ import { findDefinition } from './EventDefinitions';
 import { Link, withRouter } from 'react-router';
 import TimePicker from './TimePickerWidget';
 import Range from './RangeWidget';
+import * as Session from './Session';
 import { Number } from './BasicInputWidget';
 import "./LogEvent.css";
 
@@ -11,7 +12,7 @@ class LogEvent extends Component {
       super(props);
       this.state = {
          "fieldValues": {},
-         "definition": findDefinition(this.props.params.eventType)
+         "definition": false
       };
       this.oldRevision = 0;
 
@@ -25,7 +26,12 @@ class LogEvent extends Component {
          let doc = await db.get(this.props.params.eventId);
          this.oldRevision = doc._rev; 
          this.setState({
-            'fieldValues': doc.fieldValues
+            "fieldValues": doc.fieldValues,
+            "definition": findDefinition(doc.type)
+         });
+      } else {
+         this.setState({
+            "definition": findDefinition(this.props.params.eventType)
          });
       }
    }
@@ -55,7 +61,8 @@ class LogEvent extends Component {
             'fieldValues': this.state.fieldValues
          });
       }
-      that.props.router.push('/?log=success');
+      Session.flash('event.saved', true);
+      that.props.router.push('/');
    };
 
    render() {

@@ -42,6 +42,10 @@ class DBLayer {
       return this.db.get(id)
    }
 
+   remove(id) {
+      return this.db.remove(id)
+   }
+
    getLatest(limit) {
       return this.db.query(
          'time_order/by_time',
@@ -89,7 +93,6 @@ class DBLayer {
 
 async function buildDBLayer() {
    let db = new PouchDB('log');
-   console.log("loading");
    let currVersion = 0;
    try {
       let currTimeDoc = await db.get('_design/time_order');

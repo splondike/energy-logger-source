@@ -5,6 +5,7 @@ import App from './App';
 import Dashboard from './Dashboard';
 import LogEvent from './LogEvent';
 import History from './History';
+import RemoveEvent from './RemoveEvent';
 import setupDb from './PouchSetup';
 import Settings from './Settings';
 import "./index.css";
@@ -14,8 +15,9 @@ setupDb().then(function(db) {
       <Router history={hashHistory}>
          <Route path="/" component={App}>
             <IndexRoute component={Dashboard}/>
-            <Route path="/log/:eventType/new" database={db} component={LogEvent}/>
-            <Route path="/log/:eventType/:eventId" database={db} component={LogEvent}/>
+            <Route path="/log/new/:eventType" database={db} component={LogEvent}/>
+            <Route path="/log/:eventId/edit" database={db} component={LogEvent}/>
+            <Route path="/log/:eventId/remove" database={db} component={RemoveEvent}/>
             <Route path="/history" database={db} component={History}/>
             <Route path="/settings" database={db} component={Settings}/>
          </Route>

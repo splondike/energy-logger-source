@@ -38,7 +38,7 @@ class History extends Component {
          'items': result.rows.map((doc) => {
             return (
                <li key={doc.id}>
-                  <b>{doc.doc.type}:</b> {doc.doc.fieldValues.timestamp} (<Link to={`/log/${doc.doc.type}/${doc.id}`}>edit</Link>)
+                  <b>{doc.doc.type}:</b> {doc.doc.fieldValues.timestamp} (<Link to={`/log/${doc.id}/edit`}>edit</Link>, <Link to={`/log/${doc.id}/remove`}>remove</Link>)
                </li>
             );
          })
